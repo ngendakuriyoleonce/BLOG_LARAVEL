@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,19 +15,8 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
-        Article::create([
-             'title' => 'Title 1',
-        'description' => 'This is article description',
-           'image'=> 'images/1.png',
-           'user_id' => 1,
-           'category_id'=> 2,
-        ]);
-        Article::create([
-             'title' => 'Title 1',
-        'description' => 'This is article description',
-           'image'=> 'images/2.png',
-           'user_id'=> 1,
-           'category_id'=> 2,
-        ]);
+        User::factory()->count(5)->create();
+        Category::factory()->count(5)->create();
+        Article::factory()->count(5)->create();
     }
 }
