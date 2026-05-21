@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -14,12 +15,8 @@ class BlogController extends Controller
         $categories=Category::all();
         return view('blog.create',compact('categories'));
     }
-    public function CreateArticale(Request $request){
-        $validateddata=$request->validate([
-'title'=>'required|string|max:255',
-'description'=>'required|string',
-'category'=>'required|string|max:255',
-'image'=>'nullable|image|mimes:jpeg,jpg,png,gif,tiff,raw,webp,heif,heic,bmp,svg|max:2048',
+    public function CreateArticale(ArticleRequest $request){
+        $validateddata=$request->validated([
         ]);
 
         //verfier si category existe et le creer
