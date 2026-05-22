@@ -19,6 +19,8 @@
       </div>
          <div class="hidden md:flex items-center space-x-6 text-white">
          <a href="{{Route('login')}}" class="hover:text-blue-600">LOGIN</a></div>
+     
+        
     </div>
  
   </div>
