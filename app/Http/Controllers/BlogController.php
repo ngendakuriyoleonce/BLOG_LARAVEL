@@ -5,12 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BlogController extends Controller
 {
+     use AuthorizesRequests;
+     
+     protected ArticleService $articleservice;  //utilisation de non service
+    public function __construct(ArticleService  $articleservice)
+    {
+        $this->articleservice = $articleservice;
+    }
+
     public function ReadCategory(){
         $categories=Category::all();
         return view('blog.create',compact('categories'));
@@ -19,24 +29,7 @@ class BlogController extends Controller
         $validateddata=$request->validated([
         ]);
 
-        //verfier si category existe et le creer
-        $category = Category::firstOrCreate(
-            ['name'=>$validateddata['category']]
-        );
-
-        //assinger category id a notre schema de validation
-        $validateddata['category_id']= $category->id;
-
-        //verfie si image a ate envoye
-        if($request->hasfile('image')){
-            $imagename=time().'.'.$request->image->extension();
-            $request->image->move(public_path('image'),$imagename); //save image folder public
-            $validateddata['image']='image/'.$imagename;   //save image en bdd
-        }else{
-           $validateddata['image']=null;  //if no image remain null
-        }
-         $validateddata['user_id']=Auth::id(); //save id de l'auteur connecter
-         Article::create($validateddata); //crrer notre article
+    $this->articleservice->CreateArticle($validateddata);
 
        return redirect()->route('dashboard')->with('success',"Article created successful");
     }
@@ -44,13 +37,13 @@ class BlogController extends Controller
 
     //afficher les articles crees
     public function dashboardarticles():View{
-       $articles = Article::with('category')->where('user_id', Auth::id())->get(); 
+       $articles = $this->articleservice->dashboardarticles();
         return view('dashboard',['articles'=>$articles]);
     }
     
     //recuperer id et article on va modifier
     public function dashboardarticlesingle(int $id):View{
-         $article = Article::findOrFail($id);
+         $article = $this->articleservice->dashboardarticlesingle($id);
         $categorie=Category::all();
         return view('blog.update',compact('article','categorie'));
     }
@@ -66,26 +59,10 @@ class BlogController extends Controller
     'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048',
     ]);
 
-    $article = Article::findOrFail($id);
-
-    if ($request->hasFile('image')) {
-
-        if ($article->image && file_exists(public_path($article->image))) {
-            unlink(public_path($article->image));
-        }
-
-        $imagename = time() . '.' . $request->image->extension();
-
-        $request->image->move(public_path('image'), $imagename);
-
-        $validateddata['image'] = 'image/' . $imagename;
-
-    } else {
-
-        $validateddata['image'] = $article->image;
-    }
-
-    $article->update($validateddata);
+    $article = $this->articleservice->dashboardarticlesingle($id);
+   $this->authorize('update', $article);
+   $this->articleservice->update($article, $validateddata);
+ 
 
     return redirect()->route('dashboard',$id)
         ->with('update', 'Article updated successful');
@@ -94,8 +71,8 @@ class BlogController extends Controller
 //SUPPRIMER UN ARTICLE
 
   public function destroy(int $id){
-         $article = Article::findOrFail($id);
-        $article->delete($id);
+         $article =  $this->articleservice->dashboardarticlesingle($id);
+       $this->articleservice->destroy($article);
         return redirect()->route('dashboard')
         ->with('delete', 'Article deleted successful');
     }
