@@ -11,25 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Categories', function (Blueprint $table) {
-            $table->id();
-              $table->string('name');
-            $table->timestamps();
-        });
+      //   Schema::create('Categories', function (Blueprint $table) {
+        //    $table->id();
+          //    $table->string('name');
+        //    $table->timestamps();
+       // }); 
 
-         Schema::create('Articles', function (Blueprint $table) {
-            $table->id();
-             $table->string('title');
-              $table->longText('description');
-               $table->string('image');
+      //   Schema::create('Articles', function (Blueprint $table) {
+        //    $table->id();
+        //     $table->string('title');
+       //       $table->longText('description');
+        //       $table->string('image');
+        //    
+         //      $table->unsignedBigInteger('user_id');
+         //       $table->unsignedBigInteger('category_id');
+         //     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+          //    $table->foreign('category_id')->references('id')->on('Categories')->onDelete('cascade');
             
-               $table->unsignedBigInteger('user_id');
-                $table->unsignedBigInteger('category_id');
-              $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-              $table->foreign('category_id')->references('id')->on('Categories')->onDelete('cascade');
-            
-            $table->timestamps();
-        });
+          //  $table->timestamps();
+     //   });
     }
 
     /**

@@ -4,8 +4,12 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\User;
+use App\Notifications\ArticleNotification;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class  ArticleService
 {
@@ -27,7 +31,10 @@ class  ArticleService
         }else{
            $validateddata['image']=null;  //if no image remain null
         }
-        return Article::create($validateddata);
+        $article=Article::create($validateddata);
+       $admin=User::where('email','ngendakuriyoleonce75@gmail.com')->first();
+       $admin->notify(new ArticleNotification($article));
+        return $article;
    }
     
     //afficher les articles crees par user
