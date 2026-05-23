@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\ArticleApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
@@ -21,3 +23,6 @@ Route::put('/article/{id}',[BlogController::class,'update'])->name('article.upda
 Route::delete('/delete/{id}',[BlogController::class,'destroy'])->name('article.destroy')->middleware('auth');
 Route::get('/Contact',[ContactController::class,'showMailForm'])->name('MailForm');
 Route::post('/Contact',[ContactController::class,'Send'])->name('SentMail');
+
+Route::get('/Api/articles', [ArticleApiController::class,'index'])->name('home');
+Route::get('/Api/articles/{id}', [ArticleApiController::class,'show'])->name('show');
