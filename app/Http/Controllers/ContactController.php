@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ContactEvent;
 use App\Mail\ContactMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -18,7 +19,7 @@ class ContactController extends Controller
 'email'=>'required|email',
 'message'=>'required|string',
         ]);
-       Mail::to("ngendakuriyoleonce75@gmail.com")->send(New ContactMail($details));
+      event(new ContactEvent($details));
        return back()->with('success',"Your Mail sent successful");
     }
 }
