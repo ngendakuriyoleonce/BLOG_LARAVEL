@@ -80,14 +80,23 @@ class ArticleApiController extends Controller
     return response()->json([
             'success' => true,
             'data' => new ArticleResource($article)
-        ]);
+        ],200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        //
+
+{
+    $article = Article::findOrFail($id);
+
+    $article->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Article deleted successfully'
+    ], 200);
+
     }
 }
